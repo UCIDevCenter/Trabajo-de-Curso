@@ -1,13 +1,17 @@
 #include <iostream>
 #include <ctime>
 using namespace std;
+
+void Destino (char d [9], int x, int y, int z,int c [9]);
+
 int main(){
-	int a = 0;
+	int no_valido = 0;
+	int cant_av = 0;
 	int Cuba = 0;
 	int Nicaragua = 0;
 	int aviones [9];
 	int Cvuelos;
-	char destino, C, N, X;
+	char destino[9];
 	
 	cout<<"Digite las ID de los aviones disponibles de la aerolinea" << endl;
 	cout<<"Recuerde que los Id no deben exceder los tres digtos" << endl;
@@ -19,35 +23,43 @@ int main(){
 			break;
 		}
 		if (aviones[i] > 999 || aviones[i] < 100){
+			cout << "Ha ingresado una ID no valida, no se tendra en cuenta por favor ingrese nuevamente la ID" << endl;
 			aviones[i] = 0;
 			i = -1;
-			a++;
+			no_valido++;
 		}
-		if (a > 9){
+		if (no_valido > 9){
 			cout <<"Ha ingresado demasiados intentos no validos el programa se cerrara como medida de seguridad" << endl;
 			break;
 		}
+		cant_av++;
 	}
 	
-     for (int i = 0; i < a ; i++) {
-        cout <<"Cantidad de vuelos para el avion con el ID: " <<aviones[i]<< endl;
-            cin>>Cvuelos;
-        while(true){
-             cout <<"Ingrese el destino del vuelo (C para Cuba, N para Nicaragua, X para terminar): ";
-             cin >> destino;
-             
-             if(destino != C ){
-             	cout<<"Error: tiene que introducir C para Cuba, N para Nicaragua y X para terminar";
-			 } else if(destino != N ){
-             	cout<<"Error: tiene que introducir C para Cuba, N para Nicaragua y X para terminar";
-			 }
-			                              
-            if (destino == C){			
-                    Cuba++;
-            } else if (destino == N){
-                    Nicaragua++;
-        }       
-    }}	
+	Destino(destino, cant_av, Cuba, Nicaragua, aviones);
 	
 	return  0;
+}
+
+void Destino(char d [9], int x, int y, int z, int c [9]){
+	cout << "Ingrese el destino de vuelo para los aviones de la aerolinea" << endl;
+    cout << "C --- Cuba" << endl << "N --- Nicaragua" << endl << "Digite (X) para terminar" << endl;
+    
+    for (int i = 0; i < x; i++) {
+    	cout << "Destino del avion con el ID: " << c[i] << endl;
+        cin >> d[i];
+        
+        if(d[i] != 'C' && d[i] != 'N' && d[i] != 'X'){
+            cout<<"Error: debe que introducir C para Cuba, N para Nicaragua y X para terminar";
+            
+			}
+        if (d[i] == 'C'){			
+            y++;
+        } 
+		if (d[i] == 'N'){
+            z++;
+    	}
+    	if (d[i] == 'X'){
+    		break;
+		}
+    }
 }
