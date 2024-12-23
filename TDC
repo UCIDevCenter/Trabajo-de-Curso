@@ -1,13 +1,17 @@
 #include <iostream>
 #include <ctime>
 using namespace std;
-
 int main(){
 	int a = 0;
+	int Cuba = 0;
+	int Nicaragua = 0;
 	int aviones [9];
-	cout << "Digite las ID de los aviones disponibles de la aerolinea" << endl;
-	cout << "Recuerde que los Id no deben exceder los tres digtos" << endl;
-	cout << "Si la cantidad de aviones disponibles no logra alcanzar el limite digite 0 para concluir" << endl;
+	int Cvuelos;
+	char destino, C, N, X;
+	
+	cout<<"Digite las ID de los aviones disponibles de la aerolinea" << endl;
+	cout<<"Recuerde que los Id no deben exceder los tres digtos" << endl;
+	cout<<"Si la cantidad de aviones disponibles no logra alcanzar el limite digite 0 para concluir" << endl;
 	
 	for (int i = 0; i < 9; i ++){
 		cin >> aviones[i];
@@ -20,10 +24,30 @@ int main(){
 			a++;
 		}
 		if (a > 9){
-			cout << "Ha ingresado demasiados intentos no validos el programa se cerrara como medida de seguridad" << endl;
+			cout <<"Ha ingresado demasiados intentos no validos el programa se cerrara como medida de seguridad" << endl;
 			break;
 		}
 	}
+	
+     for (int i = 0; i < a ; i++) {
+        cout <<"Cantidad de vuelos para el avion con el ID: " <<aviones[i]<< endl;
+            cin>>Cvuelos;
+        while(true){
+             cout <<"Ingrese el destino del vuelo (C para Cuba, N para Nicaragua, X para terminar): ";
+             cin >> destino;
+             
+             if(destino != C ){
+             	cout<<"Error: tiene que introducir C para Cuba, N para Nicaragua y X para terminar";
+			 } else if(destino != N ){
+             	cout<<"Error: tiene que introducir C para Cuba, N para Nicaragua y X para terminar";
+			 }
+			                              
+            if (destino == C){			
+                    Cuba++;
+            } else if (destino == N){
+                    Nicaragua++;
+        }       
+    }}	
 	
 	return  0;
 }
