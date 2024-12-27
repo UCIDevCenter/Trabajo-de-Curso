@@ -5,6 +5,7 @@ using namespace std;
 void Destino (string d [30][9], int x,int c [9]);
 void ImprimirDestinos(string d[30][9], int x, int c[9], int &b, int  &n);
 void ID_Aviones(int a[9], int &b, int &c);
+void Fly_Match(string d[30][9], int c, int a[9], int x, int h);
 
 int main(){
 	bool salir = false;
@@ -17,6 +18,7 @@ int main(){
 	string destino[30][9];
 	int Opcion = 0;
 	int seguridad = 0;
+	int coincidencia = 1;
 	
 	while (salir != true){
 		cout << "===========================================" << endl;
@@ -26,7 +28,8 @@ int main(){
 		cout << "1. Ingresar las ID de los aviones disponibles de la Aerolinea" << endl;
 		cout << "2. Ingresar los destinos aviones disponibles en el mes" << endl;
 		cout << "3. Ver la informacion individual de cada avion" << endl;
-		cout << "4. Salir" << endl;
+		cout << "4. Itinerarios de vuelos a Cuba por dia y porcentaje de vuelos a Nicaragua del dia siguiente" << endl;
+		cout << "5. Salir" << endl;
 		cin >> Opcion;
 		
 		switch(Opcion){
@@ -64,6 +67,18 @@ int main(){
 				break;
 				}
 			case 4:
+				cout << endl;
+				cout << "Opcion Seleccionada: " << Opcion << endl;
+				if (destino[0][0] != "C" && destino[0][0] != "N" && destino[0][0] != "X"){
+					cout << "Error: No hay destinos definidos para los aviones de la aerolinea" << endl;
+					cout << endl;
+					break;
+				} else {
+				Fly_Match(destino, coincidencia, aviones, cant_av, aux);
+				cout << endl;
+				break;
+				}
+			case 5:
 				cout << endl;
 				cout << "Opcion Seleccionada: " << Opcion << endl;
 				salir = true;
@@ -179,5 +194,48 @@ void ID_Aviones(int a[9], int &b, int &c){
 			break;
 		}
 		c++;
+	}
+}
+
+void Fly_Match(string d[30][9], int c, int a[9], int x, int h){
+	int no_vuelosC = 0;
+	float no_vuelosN = 0;
+	while (c != 0){
+	cout << "Por favor, indique el dia del mes del cual desea conocer la cantidad de aviones que viajaron a Cuba" << endl;
+	cin >> h;
+	no_vuelosC = 0;
+	for(int i = 0; i < x; i++){
+			if(d[h-1][i] == "C"){
+				cout << "El vuelo con ID: " << a[i] << " viajo a Cuba el dia: " << h << endl;
+				no_vuelosC++;
+			}
+			if(d[h][i] == "N"){
+				no_vuelosN++;
+			}
+		}
+		if(no_vuelosN == 0){
+			cout << "Ningun avion tiene programado vuelo con destino a Nicaragua para el dia " << h << endl;
+		}
+		else{
+			cout << "El porcentaje de aviones con destino a Nicaragua para el dia " << h+1 << " es de: " << (no_vuelosN*100)/x << " porciento" << endl;
+		}
+		if (no_vuelosC == 0){
+			cout << "No hubo vuelos a Cuba ese dia" << endl;
+		}
+		no_vuelosC = 0;
+		cout << "================================================================" << endl;
+		cout << "Si desea conocer los vuelos de algun otro dia por favor digite 1" << endl;
+		cout << "En caso contrario por favor digite 0" << endl;
+		cin >> c;
+		while (c != 0 && c !=  1){
+			cout << "Error: La opcion ingresada no es valida" << endl;
+			cout << "Ingrese:" << endl << "0-----Salir" << endl << "1-----Continuar" << endl;
+			cin >> c;
+			no_vuelosC++;
+			if (no_vuelosC == 3){
+				cout << "Error: Ha ingresado demasiados intentos no validos el programa se cerrara como medida de seguridad" << endl;
+				c = 0;
+			}
+		}
 	}
 }
