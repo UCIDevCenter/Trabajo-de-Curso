@@ -1,20 +1,21 @@
 #include <iostream>
 #include <string>
+#include <iomanip> // Biblioteca para manipular el formato de entrada/salida
 using namespace std;
 
 void Destino (string d [30][9], int x,int c [9]);
-void ImprimirDestinos(string d[30][9], int x, int c[9], int &b, int  &n);
+void ImprimirDestinos(string d[30][9], int x, int c[9], float b, float n);
 void ID_Aviones(int a[9], int &b, int &c);
 void Fly_Match(string d[30][9], int c, int a[9], int x, int h);
 void PromedioViajes(string d[30][9], int x, int c[9]);
-void RentabilidadAvion(string d[30][9], int x, int c[9]);
+void Rentabilidad(string d[30][9], int x, int c[9], float b, float n);
 
 int main(){
 	bool salir = false;
 	int no_valido = 0;
 	int cant_av = 0;
-	int Cuba = 0;
-	int Nicaragua = 0;
+	float Cuba = 0;
+	float Nicaragua = 0;
 	int aviones [9] = {0,0,0,0,0,0,0,0,0};
 	int aux = 0;
 	string destino[30][9];
@@ -31,7 +32,9 @@ int main(){
 		cout << "2. Ingresar los destinos aviones disponibles en el mes" << endl;
 		cout << "3. Ver la informacion individual de cada avion" << endl;
 		cout << "4. Itinerarios de vuelos a Cuba por dia y porcentaje de vuelos a Nicaragua del dia siguiente" << endl;
-		cout << "5. Salir" << endl;
+		cout << "5. Promedio de Viajes de un Avion" << endl;
+		cout << "6. Rentabilidad de los aviones en el mes" << endl;
+		cout << "7. Salir" << endl;
 		cin >> Opcion;
 		
 		switch(Opcion){
@@ -81,6 +84,30 @@ int main(){
 				break;
 				}
 			case 5:
+				cout << endl;
+				cout << "Opcion Seleccionada: " << Opcion << endl;
+				if (destino[0][0] != "C" && destino[0][0] != "N" && destino[0][0] != "X"){
+					cout << "Error: No hay destinos definidos para los aviones de la aerolinea" << endl;
+					cout << endl;
+					break;
+				} else {
+				PromedioViajes(destino, cant_av, aviones);
+				cout << endl;
+				break;
+				}
+			case 6:
+				cout << endl;
+				cout << "Opcion Seleccionada: " << Opcion << endl;
+				if (destino[0][0] != "C" && destino[0][0] != "N" && destino[0][0] != "X"){
+					cout << "Error: No hay destinos definidos para los aviones de la aerolinea" << endl;
+					cout << endl;
+					break;
+				} else {
+				Rentabilidad(destino, cant_av, aviones, Cuba, Nicaragua);
+				cout << endl;
+				break;
+				}
+			case 7:
 				cout << endl;
 				cout << "Opcion Seleccionada: " << Opcion << endl;
 				salir = true;
@@ -150,7 +177,7 @@ void Destino(string d [30][9], int x, int c [9]){
 	}
 }
 
-void ImprimirDestinos(string d[30][9], int x, int c[9], int &b, int  &n){ 
+void ImprimirDestinos(string d[30][9], int x, int c[9], float b, float n){ 
 	cout << "Lista de destinos para cada avion:" << endl; 
 	for (int i = 0; i < x; i++) { 
 		cout << "ID del avion: " << c[i] << endl; 
@@ -243,76 +270,82 @@ void Fly_Match(string d[30][9], int c, int a[9], int x, int h){
 }
 
 void PromedioViajes(string d[30][9], int x, int c[9]){
+	float Cuba = 0;
+	float Nicaragua = 0;
+	int ID = 0;
+	cout << "Digte la ID del avion del cual desea conocer el promedio de de viajes: " << endl;
+	cin >> ID;
 	for (int i = 0; i < x; i++){
-	    int Cuba = 0;
-	    int Nicaragua = 0;
-	    
-	    for(int j = 0; j < 30; j++){
-	    	if (d[j][i] == "C"){
-			Cuba++;	
-			} else if (d[j][i] == "N"){
-				Nicaragua++; 
-			}
-	    }
-	    
-	float promedioCuba = Cuba / 30;
-	float promedioNicaragua = Nicaragua / 30;
+		if (c[i] == ID){
+			x = i;
+		}
+	}
+	for(int j = 0; j < 30; j++){
+	    if (d[j][x] == "C"){
+		Cuba++;	
+		} else if (d[j][x] == "N"){
+			Nicaragua++; 
+		}
+	}
 	
+	// Configurar la precision para mostrar hasta las centesimas 
+	cout << fixed << setprecision(2); 
+	   
+	float promedioCuba = (Cuba / 28) * 100;
+	float promedioNicaragua = (Nicaragua / 28) * 100;
+	promedioCuba = static_cast<int>(promedioCuba);
+	promedioNicaragua =  static_cast<int>(promedioNicaragua);
 	cout << "===================================" << endl;
-	cout << "Avion ID: " << c[i] << endl;
-	cout << "Promedio de viajes a Cuba: " << promedioCuba << endl;
-	cout << "Promedio de viajes a Nicaragua: " << promedioNicaragua << endl;
-			        	
-    }	
-}	
+	cout << "Avion ID: " << ID << endl;
+	cout << "Promedio de viajes a Cuba: " << promedioCuba << "%" << endl;
+	cout << "Promedio de viajes a Nicaragua: " << promedioNicaragua << "%" << endl;			        	
+}		
 
-void RentabilidadAvion(string d[30][9], int x, int c[9]) {
-     const int distanciaCuba = 2064;
-	 const int distanciaNicaragua = 2160;
-	 
-	    auto calcularValorPasaje = [](int distancia, float descuento) -> float {
-		  	if (distancia <= 2000) {
-		  		return distancia * 0.25 * (1 - descuento);
-		  	} else {
-		  		return distancia * 0.30 * (1 - descuento);
-		  	}
-	    };
-	    
-	    float valorCuba = calcularValorPasaje(distanciaCuba, 0.0132);
-	    float valorNicaragua = calcularValorPasaje(distanciaNicaragua, 0.015);
-	    int ingresosTotales[9] = {0};
-	    
-	    for (int i = 0; i < x; i++) {
-	    	int ingresosCuba = 0;
-	    	int ingresosNicaragua = 0;
-	    	
-	    	for (int j = 0; j < 30; j++) {
-	    		if (d[j][i] == "C") {
-	    			ingresosCuba += valorCuba;
-	    		} else if (d[j][i] == "N") {
-	    			ingresosNicaragua += valorNicaragua;
-	    		}
-	        }
-	        
-	    ingresosTotales[i] = ingresosCuba + ingresosNicaragua;
-	    
-	cout << "===================================" << endl;
-	cout << "Avion ID: " << c[i] << endl;
-	cout << "Ingresos por viajes a Cuba: " << ingresosCuba << " USD" << endl;
-	cout << "Ingresos por viajes a Nicaragua: " << ingresosNicaragua << " USD" << endl;
-	cout <<"Ingresos totales: " << ingresosTotales[i] << " USD" << endl;
- 
-  }
+void Rentabilidad(string d[30][9], int x, int c[9], float b, float n) {
+	double ingresosTotales[4][9];
+	double rentabilidad [2]; 
+		
+	for (int j = 0; j < x; j++){
+		ingresosTotales[0][j] = c[j];
+	}
 	
-	int maxIngresos = ingresosTotales[0];
-	int idAvionRentable = c[0];
+	for (int i = 0; i < x; i++){	
+		for (int j = 0; j < 30; j++){
+			if (d[j][i] == "C"){
+				b++;
+			}
+			if (d[j][i] == "N"){
+				n++;
+			}
+		}
+		b*= 611.03;
+		n *= 638.28;
+		ingresosTotales[1][i] = b;
+		ingresosTotales[2][i] = n;
+		ingresosTotales[3][i] = n + b;
+		b = 0;
+		n = 0;
+	}
 	
-	    for (int i = 1; i < x; i++) {
-	    	if (ingresosTotales[i] > maxIngresos) {
-	    		maxIngresos = ingresosTotales[i];
-	    		idAvionRentable = c[i];
-	        }
-	    }
-	cout << "El avion más rentable del mes es el avion ID: " << idAvionRentable << " con ingresos de: " << maxIngresos << " USD" << endl;
+	// Configurar la precision para mostrar hasta las centesimas 
+	cout << fixed << setprecision(2);    
 	
+	cout << "========================================================" << endl;
+	cout << "Relaion de ganancias por ventas de pasajes de cada avion" << endl;
+	for (int i = 0; i < x; i++){	
+			cout << "Avion con ID: " << ingresosTotales[0][i] << endl;;
+			cout << "Ingresos por viajes a Cuba: " << ingresosTotales[1][i] << " USD" << endl;
+			cout << "Ingresos por viajes a Nicaragua: " << ingresosTotales[2][i] << " USD" << endl;
+			cout << "Ingresos totales en el mes: " << ingresosTotales[3][i] << " USD" << endl;
+			
+			if (ingresosTotales[3][i] >= ingresosTotales[3][i+1]){
+				rentabilidad[0] = ingresosTotales[3][i];
+				rentabilidad[1] = ingresosTotales[0][i];
+			}
+			else{
+				rentabilidad[0] = ingresosTotales[3][i+1];
+				rentabilidad[1] = ingresosTotales[0][i+1];
+			}
+	}
+	cout << "El avion mas rentable en el mes fue el " << rentabilidad[1] << " con un Ingreso Total de: " << rentabilidad[0] << " USD" << endl;	
 }
