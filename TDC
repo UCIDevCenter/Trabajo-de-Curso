@@ -22,6 +22,8 @@ int main(){
 	int Opcion = 0;
 	int seguridad = 0;
 	int coincidencia = 1;
+	bool Opcion1_Cerrada = false;
+	bool Opcion2_Cerrada = false;
 	
 	while (salir != true){
 		cout << "===========================================" << endl;
@@ -39,13 +41,25 @@ int main(){
 		
 		switch(Opcion){
 			case 1:
+				if (Opcion1_Cerrada == true){
+					cout << "ERROR: Las ID de los aviones ya han sido introducidas" << endl;
+					break;
+				}
 				cout << endl;
 				cout << "Opcion Seleccionada: " << Opcion << endl;
 				cout << endl;
 				ID_Aviones(aviones, no_valido, cant_av);
+				/*for (int i = 0; i < 9; i++){
+					cout << aviones[i] << " ";
+				}*/
+				Opcion1_Cerrada = true;
 				cout << endl;
 				break;
 			case 2:
+				if (Opcion2_Cerrada == true){
+					cout << "ERROR: Los destinos de los aviones ya han sido introducidos" << endl;
+					break;
+				}
 				cout << endl;
 				cout << "Opcion Seleccionada: " << Opcion << endl;
 				cout << endl;
@@ -55,6 +69,13 @@ int main(){
 					break;
 				} else {
 				Destino(destino, cant_av, aviones);
+				/*for (int i = 0; i < 9; i++){
+					cout << endl;
+					for (int j = 0; j < 30; j++){				
+						cout << destino[j][i] << " ";
+					}
+				}*/
+				Opcion2_Cerrada = true;
 				cout << endl;
 				break;
 				}
@@ -109,7 +130,7 @@ int main(){
 				}
 			case 7:
 				cout << endl;
-				cout << "Opcion Seleccionada: " << Opcion << endl;
+				cout << "Usted ha salido del Sistema" << endl;
 				salir = true;
 				break;
 			default:
@@ -133,10 +154,13 @@ void Destino(string d [30][9], int x, int c [9]){
     cout << "C --- Cuba" << endl << "N --- Nicaragua" << endl << "Digite (X) para terminar" << endl;
     
     for (int i = 0; i < x; i++) {
+    	if (c[i] == 0){
+			break;
+		}
     	cout << "Destino del avion con el ID: " << c[i] << endl;
         for (int j = 0; j < 30; j++){ 
 			cin >> d[j][i];
-        	
+        	// Revisar reparacion y opcion "X" para cerrar el subprograma
 			if(j == 13 || j == 27){
 				d[j][i] = "R";
 				cout << "El avion no puede volar al destino indicado debe pasar un proceso de reparacion" << endl;
@@ -145,7 +169,7 @@ void Destino(string d [30][9], int x, int c [9]){
         	}
         	
         	while (d[j][i] != "C" && d[j][i] != "N" && d[j][i] != "X"){
-            	cout<<"Error: debe que introducir C para Cuba, N para Nicaragua y X para terminar" << endl;
+            	cout<<"ERROR: Debe que introducir C para Cuba, N para Nicaragua y X para terminar" << endl;
             	cin >> d[j][i];
             	p++;
 				if (p == 5){
@@ -178,8 +202,13 @@ void Destino(string d [30][9], int x, int c [9]){
 }
 
 void ImprimirDestinos(string d[30][9], int x, int c[9], float b, float n){ 
+	// En la Reiteracion de la opcion revisar los decimales
 	cout << "Lista de destinos para cada avion:" << endl; 
-	for (int i = 0; i < x; i++) { 
+	for (int i = 0; i < x; i++) {
+		if (c[i] == 0){
+			break;
+		}
+		cout << "============================================" << endl; 
 		cout << "ID del avion: " << c[i] << endl; 
 		cout << "Destinos: "; 
 		for (int j = 0; j < 30; j++) { 
@@ -203,9 +232,9 @@ void ImprimirDestinos(string d[30][9], int x, int c[9], float b, float n){
 
 void ID_Aviones(int a[9], int &b, int &c){
 	cout<<"Digite las ID de los aviones disponibles de la aerolinea (Limite: 9)" << endl;
-	cout<<"Recuerde que los Id no deben exceder los tres digtos" << endl;
-	cout<<"Si la cantidad de aviones disponibles no logra alcanzar el limite digite 0 para concluir" << endl;
-	cout << "Las ID que inician en 0 y 00 forman parte de la USA-ID-SYSTEM no estan disponibles en nuestro pais" << endl;
+	cout<<"--- Recuerde que los ID deben ser exclusivamente de tres digitos" << endl;
+	cout<<"--- Si la cantidad de aviones disponibles no logra alcanzar el limite, Digite 0 para concluir" << endl;
+	cout << "--- Las ID que inician en 0 y 00 forman parte de la USA-ID-SYSTEM no estan disponibles en nuestro pais" << endl;
 	
 	for (int i = 0; i < 9; i ++){
 		cin >> a[i];
@@ -222,11 +251,13 @@ void ID_Aviones(int a[9], int &b, int &c){
 			cout <<"Ha ingresado demasiados intentos no validos el programa se cerrara como medida de seguridad" << endl;
 			break;
 		}
+		// Colocar un bucle while para las ID iguales y nueva variable
 		c++;
 	}
 }
 
 void Fly_Match(string d[30][9], int c, int a[9], int x, int h){
+	// Revisar
 	int no_vuelosC = 0;
 	float no_vuelosN = 0;
 	while (c != 0){
@@ -234,24 +265,29 @@ void Fly_Match(string d[30][9], int c, int a[9], int x, int h){
 	cin >> h;
 	no_vuelosC = 0;
 	for(int i = 0; i < x; i++){
-			if(d[h-1][i] == "C"){
+			if(d[h-1][i] == "C" /*&& a[i] != 0*/){
 				cout << "El vuelo con ID: " << a[i] << " viajo a Cuba el dia: " << h << endl;
 				no_vuelosC++;
 			}
 			if(d[h][i] == "N"){
+				cout << no_vuelosN << endl;
 				no_vuelosN++;
+				cout << no_vuelosN << endl;
 			}
 		}
 		if(no_vuelosN == 0){
-			cout << "Ningun avion tiene programado vuelo con destino a Nicaragua para el dia " << h << endl;
+			cout << "Ningun avion tiene programado vuelo con destino a Nicaragua para el dia " << h+1 << endl;
 		}
 		else{
+			//Configurar la precision para mostrar hasta las centesimas
+			cout << fixed << setprecision(2);
 			cout << "El porcentaje de aviones con destino a Nicaragua para el dia " << h+1 << " es de: " << (no_vuelosN*100)/x << " porciento" << endl;
 		}
 		if (no_vuelosC == 0){
 			cout << "No hubo vuelos a Cuba ese dia" << endl;
 		}
 		no_vuelosC = 0;
+		no_vuelosN = 0;
 		cout << "================================================================" << endl;
 		cout << "Si desea conocer los vuelos de algun otro dia por favor digite 1" << endl;
 		cout << "En caso contrario por favor digite 0" << endl;
@@ -273,6 +309,8 @@ void PromedioViajes(string d[30][9], int x, int c[9]){
 	float Cuba = 0;
 	float Nicaragua = 0;
 	int ID = 0;
+	/* Crea un for para que el ususario pueda seguir consultando las ID de los aviones hasta que digite un valor centinela, es decir,
+	 le pones un cout que diga digite 0 para salir al menu principal del sistema e implementalo con un "if" para que se cumpla */
 	cout << "Digte la ID del avion del cual desea conocer el promedio de de viajes: " << endl;
 	cin >> ID;
 	for (int i = 0; i < x; i++){
@@ -282,7 +320,7 @@ void PromedioViajes(string d[30][9], int x, int c[9]){
 	}
 	for(int j = 0; j < 30; j++){
 	    if (d[j][x] == "C"){
-		Cuba++;	
+			Cuba++;	
 		} else if (d[j][x] == "N"){
 			Nicaragua++; 
 		}
@@ -293,8 +331,7 @@ void PromedioViajes(string d[30][9], int x, int c[9]){
 	   
 	float promedioCuba = (Cuba / 28) * 100;
 	float promedioNicaragua = (Nicaragua / 28) * 100;
-	promedioCuba = static_cast<int>(promedioCuba);
-	promedioNicaragua =  static_cast<int>(promedioNicaragua);
+	// Aumento la cantidad de aviones y el codigo quebro (Revisar)
 	cout << "===================================" << endl;
 	cout << "Avion ID: " << ID << endl;
 	cout << "Promedio de viajes a Cuba: " << promedioCuba << "%" << endl;
@@ -303,7 +340,7 @@ void PromedioViajes(string d[30][9], int x, int c[9]){
 
 void Rentabilidad(string d[30][9], int x, int c[9], float b, float n) {
 	double ingresosTotales[4][9];
-	double rentabilidad [2]; 
+	double rentabilidad [2] = {0, 0}; 
 		
 	for (int j = 0; j < x; j++){
 		ingresosTotales[0][j] = c[j];
@@ -327,25 +364,28 @@ void Rentabilidad(string d[30][9], int x, int c[9], float b, float n) {
 		n = 0;
 	}
 	
-	// Configurar la precision para mostrar hasta las centesimas 
-	cout << fixed << setprecision(2);    
+	 
 	
 	cout << "========================================================" << endl;
 	cout << "Relaion de ganancias por ventas de pasajes de cada avion" << endl;
-	for (int i = 0; i < x; i++){	
-			cout << "Avion con ID: " << ingresosTotales[0][i] << endl;;
+	for (int i = 0; i < x; i++){
+			if (ingresosTotales[0][i] == 0){
+				break;
+			}
+			// Configurar la precision para mostrar los ID como enteros
+			cout << "Avion con ID: " << fixed << setprecision(0) << ingresosTotales[0][i] << endl;;
+			// Configurar la precision para mostrar hasta las centesimas 
+			cout << fixed << setprecision(2);   
 			cout << "Ingresos por viajes a Cuba: " << ingresosTotales[1][i] << " USD" << endl;
 			cout << "Ingresos por viajes a Nicaragua: " << ingresosTotales[2][i] << " USD" << endl;
 			cout << "Ingresos totales en el mes: " << ingresosTotales[3][i] << " USD" << endl;
+			cout << "=================================================" << endl;
 			
-			if (ingresosTotales[3][i] >= ingresosTotales[3][i+1]){
+			if (ingresosTotales[3][i] > rentabilidad[0]){
 				rentabilidad[0] = ingresosTotales[3][i];
 				rentabilidad[1] = ingresosTotales[0][i];
 			}
-			else{
-				rentabilidad[0] = ingresosTotales[3][i+1];
-				rentabilidad[1] = ingresosTotales[0][i+1];
-			}
 	}
-	cout << "El avion mas rentable en el mes fue el " << rentabilidad[1] << " con un Ingreso Total de: " << rentabilidad[0] << " USD" << endl;	
+	// Configurar la precision para mostrar hasta las centesimas 
+	cout << "El avion mas rentable en el mes fue el " << fixed << setprecision(0) << rentabilidad[1] << " con un Ingreso Total de: " << fixed << setprecision(2) << rentabilidad[0] << " USD" << endl;	
 }
